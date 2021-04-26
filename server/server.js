@@ -2,8 +2,8 @@ const cluster = require("cluster");
 const http = require("http");
 const numCPUs = require("os").cpus().length;
 const express = require("express");
-const port = 8000;
 const routes = require("./routes.js");
+const config = require("./config/environment");
 
 if (cluster.isMaster) {
   createChildProcess();
@@ -14,11 +14,11 @@ if (cluster.isMaster) {
 
 function createServer(app) {
   routes(app);
-  http.createServer(app).listen(8000, function () {
+  http.createServer(app).listen(config.port, config.ip, function () {
     console.info(
       "APP: Server cluster :%d listening on %d, in %s mode",
       cluster.isWorker ? cluster.worker.id : 1,
-      port,
+      config.port,
       app.get("env")
     );
   });

@@ -6,12 +6,14 @@ const express = require("express");
 const config = require("./config/environment");
 const path = require("path");
 const MAX_AGE = 21600000; //ms
+const logger = require("./logger");
 
 if (cluster.isMaster) {
   createChildProcess();
 } else {
   const app = express();
   setConfig(app);
+  logger(app, cluster);
   setHomePage(app);
   createServer(app);
 }

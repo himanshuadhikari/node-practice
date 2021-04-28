@@ -28,6 +28,10 @@ var all = {
 
   // List of user roles
   userRoles: ["GUEST", "USER", "ADMIN"],
+  secrets: {
+    session: "chanters-secret",
+    sessionTimeMillis: process.env.SESSION_TIMEOUT || 2592000000, //DEFAULT: 30 days
+  },
 
   // MongoDB connection options
   mongo: {

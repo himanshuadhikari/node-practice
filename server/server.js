@@ -2,10 +2,8 @@ const cluster = require("cluster");
 const http = require("http");
 const numCPUs = require("os").cpus().length;
 const express = require("express");
-// const routes = require("./routes.js");
+const routes = require("./routes.js");
 const config = require("./config/environment");
-const path = require("path");
-const MAX_AGE = 21600000; //ms
 const logger = require("./logger");
 
 function createChildProcess() {
@@ -38,7 +36,7 @@ if (cluster.isMaster) {
   const app = express();
   setConfig(app);
   logger(app);
-  setHomePage(app);
+  routes(app);
   createServer(app);
 }
 
@@ -50,20 +48,6 @@ function setConfig(app) {
   app.set("views", config.root + "/server/views");
   app.engine("html", require("ejs").renderFile);
   app.set("view engine", "html");
-}
-
-function setHomePage(app) {
-  // All other routes should redirect to the index.html
-  var appPath = app.get("appPath");
-  app.route("/*").get(function (req, res, next) {
-    const fileName = path.resolve(appPath + "/index.html");
-    res.sendFile(
-      fileName,
-      (options = {
-        maxAge: MAX_AGE,
-      })
-    );
-  });
 }
 
 function createServer(app) {
